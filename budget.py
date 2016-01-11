@@ -1,35 +1,63 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import sqlite3
 import os
-import os.path
 
-db = 'budget.db'
-monthlyIncome = 'Monthly_Income'
-knownBills = 'Known_Bills'
+db = sqlite3.connect(':memory:')
 
-#Check if sqlite file exists
-if os.path.isfile('budget.db'): # Connect to database
-	conn = sqlite3.connect(db)
-	c = conn.cursor()
-	print 'Connecting to database'
-else: # Build database
-	conn = sqlite3.connect(db)
-	c = conn.cursor()
-	c.execute('''CREATE TABLE user
-			(monthlyIncome integer)''')
-	monthly = int(raw_input('What is your monthly income? '))
-	c.execute('INSERT INTO user VALUES (?)', (monthly))
-	c.execute('SELECT * FROM user')
-	print (c.fetchone())
-#	c.execute('SHOW TABLES;')
-	print 'Created database'
+c = db.cursor()
 
+shouldExit = False
 
-#c.execute('CREATE TABLE {tn} ({nf} {ft})'\
-#	.format(tn=knownBills, nf='' )
+#Create Database
+def createTable():
+	c.execute('CREATE TABLE income(name TEXT, amount FLOAT)')
+	c.execute('CREATE TABLE constantMonthly(name TEXT, amount FLOAT, month TEXT)')
+	c.execute('CREATE TABLE constantYearly(name TEXT, amount FLOAT, month TEXT)')
+	c.execute('CREATE TABLE varyingMonthly(name TEXT, amount FLOAT, month TEXT)')
+	db.commit()
 
+createTable()
 
-# Commit and close connection to database
-conn.commit()
-conn.close()
+def addIncome():
+	name = input('Source of income: ')
+	name = str(name)
+	income = input('Monthly Income: ')
+	income = float(income)
+	c.execute('INSERT INTO income VALUES (?, ?)', (name, income))
+	db.commit()
+
+def editIncome():
+	name = input('Which income are you updating?: ')
+	name = str(name)
+	income = input('New value: ')
+	income = float(income)
+	c.execute('UPDATE income SET amount=(?) WHERE name=(?)', (income, name))
+	db.commit()
+
+def addExpenseM():
+	name = input('Monthly Expense name: ')
+	name = str(name)
+	amount = input('Monthly Expense amount: ')
+	amount = float(income)
+	c.execute('INSERT INTO constantMonthly VALUES (?, ?)', (name, amount))
+	db.commit()
+
+def addExpenseY():
+	name = input('Yearly Expense name: ')
+	name = str(name)
+	amount = input('Yearly Expense amount: ')
+	amount = float(income)
+	c.execute('INSERT INTO constantYearly VALUES (?, ?)', (name, amount))
+	db.commit()
+
+def listIncome():
+	for i in c.execute('select * from income'):
+		print(i)
+
+def controls():
+	global shouldExit
+	print('Menu:')
+
+db.commit()
+db.close()
