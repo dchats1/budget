@@ -59,7 +59,7 @@ def addExpenseY(): # Add Yearly Expense
 	month = str.lower(month)
 	c.execute('INSERT INTO constantYearly VALUES (?, ?, ?)', (name, amount, month))
 
-def editExpenseYM(): # Edit Yearly Expense
+def editExpenseY(): # Edit Yearly Expense
 	name = input(' Expense name: ')
 	name = str.lower(name)
 	amount = input('Monthly Expense amount: ')
@@ -82,9 +82,15 @@ def listIncome():
 	for i in c.execute('select * from income'):
 		print(i)
 
-def controls():
+# Main Menu
+def mainMenu():
 	global shouldExit
 	print('Menu:')
+	print('|| [1] Add Yearly Income || [2] Edit ]ncome || [3] Add Monthly Expense ||')
+	print('|| [4] Edit Monthly Expenses || [5] Add Yearly Expense || [6] Edit Yearly Expense ||')
+	print('|| [7] Add purchase || [8] Exit')
+
+mainMenu()
 
 db.commit()
 db.close()
