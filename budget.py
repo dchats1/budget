@@ -3,7 +3,6 @@
 import sqlite3
 import os
 import curses
-import curses
 
 db = sqlite3.connect(':memory:')
 
