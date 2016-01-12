@@ -3,6 +3,7 @@
 import sqlite3
 import os
 import curses
+import re
 
 db = sqlite3.connect(':memory:')
 
@@ -98,14 +99,25 @@ def listIncome():
 	screen.border(0)
 	screen.refresh()
 	screen.addstr(9, 10, 'Income:')
-	n = 10
-	for i in c.execute('select * from income'):
-		a = i
-		a = str(a)
-		screen.addstr(n, 10, a)
-		n = n + 1
-	screen.addstr(n, 10, "Press Enter")
-	pause = screen.getstr(n, 10, 1)
+	c.execute('select * from income')
+	contents = c.fetchall()
+	l = 10
+	for row in contents:	
+		n = 0
+		for item in row:
+			item = str(item)	
+			if n == 0:
+				item = item[1:]
+				item = re.sub('[\']', '', item)
+				screen.addstr(l, 10, 'Source of income: '+ item)
+			elif n == 1:
+				screen.addstr(l, 10, 'Monthly salary: $' + item)
+			else:
+				screen.addstr(l, 10, 'Derrr.... check the database')
+			l = l + 1
+			n = n + 1
+	screen.addstr(l, 10, "Press Enter")
+	pause = screen.getstr(l, 10, 1)
 
 # Main Menu
 
