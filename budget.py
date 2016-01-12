@@ -50,11 +50,19 @@ def editIncome(): # Edit income
 	c.execute('UPDATE income SET amount=(?) WHERE name=(?)', (income, name))
 
 def addExpenseM(): # Add Monthly Expense
-	name = input('Monthly Expense name: ')
+	screen.clear()
+	screen.border(0)
+	screen.refresh()
+	screen.addstr(10, 10, 'Monthly Expense name: ')
+	name = screen.getstr(11, 10, 15)
+	name = str(name)
 	name = str.lower(name)
-	amount = input('Monthly Expense amount: ')
-	amount = float(income)	
-	month = input('Month: ')
+	screen.addstr(12, 10, 'Monthly Expense amount: ')
+	amount = screen.getstr(13, 10, 10)
+	amount = float(amount)
+	screen.addstr(14, 10, 'Month: ')
+	month = screen.getstr(15, 10, 10)
+	month = str(month)
 	month = str.lower(month)
 	c.execute('INSERT INTO constantMonthly VALUES (?, ?, ?)', (name, amount, month))
 
@@ -92,7 +100,7 @@ def addExpenseV(): # Add montly purchase
 	month = str.lower(month)
 	c.execute('INSERT INTO varyingMonthly VALUES (?, ?, ?)', (name, amount, month))
 
-###
+### View Functions ###
 
 def listIncome():
 	screen.clear()
@@ -119,6 +127,37 @@ def listIncome():
 	screen.addstr(l, 10, "Press Enter")
 	pause = screen.getstr(l, 10, 1)
 
+def listMonthlyC():
+	screen.clear()
+	screen.border(0)
+	screen.refresh()
+	screen.addstr(9, 10, 'Constant Monthly Expense:')
+	c.execute('select * from constantMonthly')
+	contents = c.fetchall()
+	l = 10
+	for row in contents:
+		screen.addstr(l, 10, '---')
+		n = 0
+		for item in row:
+			item = str(item)	
+			if n == 0:
+				item = item[1:]
+				item = re.sub('[\']', '', item)
+				screen.addstr(l, 10, 'Expense: '+ item)
+			elif n == 1:
+				screen.addstr(l, 10, 'Cost: $' + item)
+			elif n == 2:
+				item = item[1:]
+				item = re.sub('[\']', '', item)
+				screen.addstr(l, 10, 'Month: ' + item)
+			else:
+				screen.addstr(l, 10, 'Derrr.... check the database')
+			l = l + 1
+			n = n + 1
+	screen.addstr(l, 10, "Press Enter")
+	pause = screen.getstr(l, 10, 1)
+
+
 # Main Menu
 
 createTable()
@@ -133,6 +172,8 @@ while x != ord('9'):
 	screen.addstr(4, 4, "1 - Add Income")	
 	screen.addstr(5, 4, "2 - Edit Income")
 	screen.addstr(6, 4, "3 - View Income")
+	screen.addstr(7, 4, "4 - Add Monthly Expense")
+	screen.addstr(8, 4, "5 - View Constant Monthly Expenses")
 
 	screen.addstr(10, 4, "9 - Exit")
 
@@ -144,6 +185,10 @@ while x != ord('9'):
 		editIncome()
 	if x == ord('3'):
 		listIncome()
+	if x == ord('4'):
+		addExpenseM()
+	if x == ord('5'):
+		listMonthlyC()
 
 screen.clear()
 curses.endwin()
