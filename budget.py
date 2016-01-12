@@ -2,6 +2,8 @@
 
 import sqlite3
 import os
+import curses
+import curses
 
 db = sqlite3.connect(':memory:')
 
@@ -20,9 +22,16 @@ def createTable():
 ### Functions to edit database ###
 
 def addIncome(): # Add income values
-	name = input('Source of income: ')
+	screen.clear()
+	screen.border(0)
+	screen.refresh()
+	screen.addstr(10, 10, 'Source of income: ')
+	name = screen.getstr(11, 10, 10)
+	name = str(name)
 	name = str.lower(name)
-	income = input('Monthly Income: ')
+	screen.refresh()
+	screen.addstr(12, 10, 'Monthly Income: ')
+	income = screen.getstr(13, 10, 10)
 	income = float(income)
 	c.execute('INSERT INTO income VALUES (?, ?)', (name, income))
 
@@ -83,14 +92,26 @@ def listIncome():
 		print(i)
 
 # Main Menu
-def mainMenu():
-	global shouldExit
-	print('Menu:')
-	print('|| [1] Add Yearly Income || [2] Edit ]ncome || [3] Add Monthly Expense ||')
-	print('|| [4] Edit Monthly Expenses || [5] Add Yearly Expense || [6] Edit Yearly Expense ||')
-	print('|| [7] Add purchase || [8] Exit')
 
-mainMenu()
+createTable()
+
+x = 0
+
+while x != ord('9'):
+	screen = curses.initscr()
+	screen.clear()
+	screen.border(0)
+	screen.addstr(2, 2, "Main Menu:")
+	screen.addstr(4, 4, "1 - Add Income")
+
+	screen.addstr(10, 4, "9 - Exit")
+
+	x = screen.getch()
+
+	if x == ord('1'):
+		addIncome()
+
+curses.endwin()
 
 db.commit()
 db.close()
