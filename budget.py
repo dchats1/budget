@@ -26,6 +26,12 @@ def startFunc():
 	screen.border(0)
 	screen.refresh()
 
+def convertMonth():
+	if (month == 1) or (month == jan) or (month == january):
+		month = january
+	if (month == 2) or (month == feb) or (month == febuary):
+		month = febuary
+
 def addIncome(): # Add income values
 	startFunc()
 	screen.addstr(10, 10, 'Source of income: ')
