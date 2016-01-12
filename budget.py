@@ -104,6 +104,8 @@ def listIncome():
 		a = str(a)
 		screen.addstr(n, 10, a)
 		n = n + 1
+	screen.addstr(n, 10, "Press Enter")
+	pause = screen.getstr(n, 10, 1)
 
 # Main Menu
 
