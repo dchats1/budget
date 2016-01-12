@@ -21,12 +21,15 @@ def createTable():
 
 ### Functions to edit database ###
 
-def addIncome(): # Add income values
+def startFunc():
 	screen.clear()
 	screen.border(0)
 	screen.refresh()
+
+def addIncome(): # Add income values
+	startFunc()
 	screen.addstr(10, 10, 'Source of income: ')
-	name = screen.getstr(11, 10, 10)
+	name = screen.getstr(11, 10, 20)
 	name = str(name)
 	name = str.lower(name)
 	screen.refresh()
@@ -36,11 +39,9 @@ def addIncome(): # Add income values
 	c.execute('INSERT INTO income VALUES (?, ?)', (name, income))
 
 def editIncome(): # Edit income
-	screen.clear()
-	screen.border(0)
-	screen.refresh()
+	startFunc()
 	screen.addstr(10, 10, 'Which income are you updating?: ')
-	name = screen.getstr(11, 10, 10)
+	name = screen.getstr(11, 10, 20)
 	name = str(name)
 	name = str.lower(name)
 	screen.refresh()
@@ -50,11 +51,9 @@ def editIncome(): # Edit income
 	c.execute('UPDATE income SET amount=(?) WHERE name=(?)', (income, name))
 
 def addExpenseM(): # Add Monthly Expense
-	screen.clear()
-	screen.border(0)
-	screen.refresh()
+	startFunc()
 	screen.addstr(10, 10, 'Monthly Expense name: ')
-	name = screen.getstr(11, 10, 15)
+	name = screen.getstr(11, 10, 20)
 	name = str(name)
 	name = str.lower(name)
 	screen.addstr(12, 10, 'Monthly Expense amount: ')
@@ -67,9 +66,13 @@ def addExpenseM(): # Add Monthly Expense
 	c.execute('INSERT INTO constantMonthly VALUES (?, ?, ?)', (name, amount, month))
 
 def editExpenseM(): # Edit Monthly Expense
-	name = input(' Expense name: ')
+	startFunc()
+	screen.addstr(10, 10, 'Expense name: ')
+	name = screen.getstr(11, 10, 20)
+	name = str(name)
 	name = str.lower(name)
-	amount = input('Monthly Expense amount: ')
+	screen.addstr(12, 10, 'Monthly Expense amount: ')
+	amount = screen.getstr(13, 10, 10)
 	amount = float(income)	
 	c.execute('UPDATE constantMonthly SET amount=(?) WHERE name=(?)' (amount, name))
 
@@ -119,7 +122,7 @@ def listIncome():
 				item = re.sub('[\']', '', item)
 				screen.addstr(l, 10, 'Source of income: '+ item)
 			elif n == 1:
-				screen.addstr(l, 10, 'Monthly salary: $' + item)
+				screen.addstr(l, 10, 'Monthly salary: $' + "%.2f" % float(item))
 			else:
 				screen.addstr(l, 10, 'Derrr.... check the database')
 			l = l + 1
@@ -137,6 +140,7 @@ def listMonthlyC():
 	l = 10
 	for row in contents:
 		screen.addstr(l, 10, '---')
+		l = l + 1
 		n = 0
 		for item in row:
 			item = str(item)	
@@ -145,7 +149,7 @@ def listMonthlyC():
 				item = re.sub('[\']', '', item)
 				screen.addstr(l, 10, 'Expense: '+ item)
 			elif n == 1:
-				screen.addstr(l, 10, 'Cost: $' + item)
+				screen.addstr(l, 10, 'Cost: $' + "%.2f" % float(item))
 			elif n == 2:
 				item = item[1:]
 				item = re.sub('[\']', '', item)
@@ -173,7 +177,8 @@ while x != ord('9'):
 	screen.addstr(5, 4, "2 - Edit Income")
 	screen.addstr(6, 4, "3 - View Income")
 	screen.addstr(7, 4, "4 - Add Monthly Expense")
-	screen.addstr(8, 4, "5 - View Constant Monthly Expenses")
+	screen.addstr(8, 4, "5 - Edit Constant Monthly Expenses")
+	screen.addstr(9, 4, "6 - View Constant Monthly Expenses")
 
 	screen.addstr(10, 4, "9 - Exit")
 
@@ -188,6 +193,8 @@ while x != ord('9'):
 	if x == ord('4'):
 		addExpenseM()
 	if x == ord('5'):
+		editExpenseM()
+	if x == ord('6'):
 		listMonthlyC()
 
 screen.clear()
