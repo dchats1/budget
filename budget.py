@@ -35,9 +35,16 @@ def addIncome(): # Add income values
 	c.execute('INSERT INTO income VALUES (?, ?)', (name, income))
 
 def editIncome(): # Edit income
-	name = input('Which income are you updating?: ')
+	screen.clear()
+	screen.border(0)
+	screen.refresh()
+	screen.addstr(10, 10, 'Which income are you updating?: ')
+	name = screen.getstr(11, 10, 10)
+	name = str(name)
 	name = str.lower(name)
-	income = input('New value: ')
+	screen.refresh()
+	screen.addstr(12, 10, 'New value: ')
+	income = screen.getstr(13, 10, 10)
 	income = float(income)
 	c.execute('UPDATE income SET amount=(?) WHERE name=(?)', (income, name))
 
@@ -87,8 +94,16 @@ def addExpenseV(): # Add montly purchase
 ###
 
 def listIncome():
+	screen.clear()
+	screen.border(0)
+	screen.refresh()
+	screen.addstr(9, 10, 'Income:')
+	n = 10
 	for i in c.execute('select * from income'):
-		print(i)
+		a = i
+		a = str(a)
+		screen.addstr(n, 10, a)
+		n = n + 1
 
 # Main Menu
 
@@ -101,7 +116,9 @@ while x != ord('9'):
 	screen.clear()
 	screen.border(0)
 	screen.addstr(2, 2, "Main Menu:")
-	screen.addstr(4, 4, "1 - Add Income")
+	screen.addstr(4, 4, "1 - Add Income")	
+	screen.addstr(5, 4, "2 - Edit Income")
+	screen.addstr(6, 4, "3 - View Income")
 
 	screen.addstr(10, 4, "9 - Exit")
 
@@ -109,7 +126,12 @@ while x != ord('9'):
 
 	if x == ord('1'):
 		addIncome()
+	if x == ord('2'):
+		editIncome()
+	if x == ord('3'):
+		listIncome()
 
+screen.clear()
 curses.endwin()
 
 db.commit()
