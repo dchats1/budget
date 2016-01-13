@@ -8,7 +8,7 @@ import re
 # Create Database
 def createTable():
 	c.execute('CREATE TABLE income(name TEXT, amount FLOAT)')
-	c.execute('CREATE TABLE constantMonthly(name TEXT, amount FLOAT, month TEXT)')
+	c.execute('CREATE TABLE constantMonthly(name TEXT, amount FLOAT)')
 	c.execute('CREATE TABLE constantYearly(name TEXT, amount FLOAT, month TEXT)')
 	c.execute('CREATE TABLE varyingMonthly(name TEXT, amount FLOAT, month TEXT)')
 	db.commit()
@@ -82,12 +82,7 @@ def addExpenseM(): # Add Monthly Expense
 	screen.addstr(12, 10, 'Monthly Expense amount: ')
 	amount = screen.getstr(13, 10, 10)
 	amount = float(amount)
-	screen.addstr(14, 10, 'Month: ')
-	month = screen.getstr(15, 10, 10)
-	month = str(month)
-	month = str.lower(month)
-	month = convertMonth(month)
-	c.execute('INSERT INTO constantMonthly VALUES (?, ?, ?)', (name, amount, month))
+	c.execute('INSERT INTO constantMonthly VALUES (?, ?)', (name, amount))
 
 def editExpenseM(): # Edit Monthly Expense
 	startFunc()
@@ -174,6 +169,33 @@ def listMonthlyC():
 				screen.addstr(l, 10, 'Expense: '+ item)
 			elif n == 1:
 				screen.addstr(l, 10, 'Cost: $' + "%.2f" % float(item))
+			else:
+				screen.addstr(l, 10, 'Derrr.... check the database')
+			l = l + 1
+			n = n + 1
+	screen.addstr(l, 10, "Press Enter")
+	pause = screen.getstr(l, 10, 1)
+
+def listMonthlyV():
+	screen.clear()
+	screen.border(0)
+	screen.refresh()
+	screen.addstr(9, 10, 'Varying Monthly Expense:')
+	c.execute('select * from varyingMonthly')
+	contents = c.fetchall()
+	l = 10
+	for row in contents:
+		screen.addstr(l, 10, '---')
+		l = l + 1
+		n = 0
+		for item in row:
+			item = str(item)	
+			if n == 0:
+				item = item[1:]
+				item = re.sub('[\']', '', item)
+				screen.addstr(l, 10, 'Expense: '+ item)
+			elif n == 1:
+				screen.addstr(l, 10, 'Cost: $' + "%.2f" % float(item))
 			elif n == 2:
 				item = item[1:]
 				item = re.sub('[\']', '', item)
@@ -185,6 +207,7 @@ def listMonthlyC():
 	screen.addstr(l, 10, "Press Enter")
 	pause = screen.getstr(l, 10, 1)
 
+# Connect to DB file
 if os.path.isfile('./sqliteBudget.db'):
 	db = sqlite3.connect('sqliteBudget.db')
 	c = db.cursor()
@@ -197,31 +220,45 @@ else:
 
 x = 0
 
+
+
 while x != ord('9'):
 	screen = curses.initscr()
+	win = screen.getmaxyx()
+	halfx = int(win[1]/2)
+	halfy = int(win[0]/2)
 	curses.noecho()
 	screen.clear()
 	screen.border(0)
 	screen.addstr(2, 2, "Main Menu:")
-	screen.addstr(4, 4, "1 - Add Income")	
-	screen.addstr(5, 4, "2 - Edit Income")
-	screen.addstr(6, 4, "3 - View Income")
-	screen.addstr(7, 4, "4 - Add Monthly Expense")
-	screen.addstr(8, 4, "5 - Edit Constant Monthly Expenses")
-	screen.addstr(9, 4, "6 - View Constant Monthly Expenses")
+	screen.addstr(4, 4, "1 - Income")	
+	screen.addstr(5, 4, "2 - Add Constant Monthly Expense")
+	screen.addstr(6, 4, "3 - Edit Constant Monthly Expenses")
+	screen.addstr(7, 4, "4 - View Constant Monthly Expenses")
 
 	screen.addstr(10, 4, "9 - Exit")
 
 	x = screen.getch()
 	
 	curses.echo()
+
+	#SubMenu
 	
 	if x == ord('1'):
-		addIncome()
-	if x == ord('2'):
-		editIncome()
-	if x == ord('3'):
-		listIncome()
+		screen.addstr(4, halfx, '[A]dd Income')
+		screen.addstr(5, halfx, '[E]dit Income')
+		screen.addstr(6, halfx, '[V]iew Income')
+		screen.addstr(7, halfx, '[B]ack')
+		screen.refresh()
+		x = screen.getch()	
+			
+		if x == ord('A') or x == ord('a'):
+			addIncome()
+		if x == ord('E') or x == ord('e'):
+			editIncome()
+		if x == ord('V') or x == ord('v'):
+			listIncome()
+
 	if x == ord('4'):
 		addExpenseM()
 	if x == ord('5'):
