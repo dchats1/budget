@@ -5,12 +5,6 @@ import os
 import curses
 import re
 
-db = sqlite3.connect(':memory:')
-
-c = db.cursor()
-
-shouldExit = False
-
 # Create Database
 def createTable():
 	c.execute('CREATE TABLE income(name TEXT, amount FLOAT)')
@@ -26,11 +20,34 @@ def startFunc():
 	screen.border(0)
 	screen.refresh()
 
-def convertMonth():
-	if (month == 1) or (month == jan) or (month == january):
-		month = january
-	if (month == 2) or (month == feb) or (month == febuary):
-		month = febuary
+def convertMonth(month):
+	if (month == '1') or (month == 'jan') or (month == 'january'):
+		month = 'january'
+	elif (month == '2') or (month == 'feb') or (month == 'febuary'):
+		month = 'febuary'
+	elif (month == 3) or (month == 'mar') or (month == 'march'):
+		month = 'march'
+	elif (month == 4) or (month == 'apr') or (month == 'april'):
+		month = 'april'
+	elif (month == 5) or (month == 'may'):
+		month = 'may'
+	elif (month == 6) or (month == 'jun') or (month == 'june'):
+		month = 'june'
+	elif (month == 7) or (month == 'jul') or (month == 'july'):
+		month = 'july'
+	elif (month == 8) or (month == 'aug') or (month == 'august'):
+		month = 'august'
+	elif (month == 9) or (month == 'sep') or (month == 'september'):
+		month = 'september'
+	elif (month == 10) or (month == 'oct') or (month == 'october'):
+		month = 'october'
+	elif (month == 11) or (month == 'nov') or (month == 'november'):
+		month = 'november'
+	elif (month == 12) or (month == 'dec') or (month == 'december'):
+		month = 'december'
+	else:
+		month = 'Invalid Month, please update'
+	return month
 
 def addIncome(): # Add income values
 	startFunc()
@@ -69,6 +86,7 @@ def addExpenseM(): # Add Monthly Expense
 	month = screen.getstr(15, 10, 10)
 	month = str(month)
 	month = str.lower(month)
+	month = convertMonth(month)
 	c.execute('INSERT INTO constantMonthly VALUES (?, ?, ?)', (name, amount, month))
 
 def editExpenseM(): # Edit Monthly Expense
@@ -167,10 +185,15 @@ def listMonthlyC():
 	screen.addstr(l, 10, "Press Enter")
 	pause = screen.getstr(l, 10, 1)
 
-
+if os.path.isfile('./sqliteBudget.db'):
+	db = sqlite3.connect('sqliteBudget.db')
+	c = db.cursor()
+else:	
+	db = sqlite3.connect('sqliteBudget.db')
+	c = db.cursor()
+	createTable()
+	
 # Main Menu
-
-createTable()
 
 x = 0
 
