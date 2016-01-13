@@ -97,11 +97,17 @@ def editExpenseM(): # Edit Monthly Expense
 
 
 def addExpenseY(): # Add Yearly Expense
-	name = input('Yearly Expense name: ')
+	startFunc()
+	screen.addstr(10, 10, 'Expense name: ')
+	name = screen.getstr(11, 10, 20)
+	name = str(name)
 	name = str.lower(name)
-	amount = input('Yearly Expense amount: ')
-	amount = float(income)
-	month = input('Month: ')
+	screen.addstr(12, 10, 'Yearly Expense amount: ')
+	amount = screen.getstr(13, 10, 10)
+	amount = float(amount)
+	screen.addstr(14, 10, 'Month of Payment: ')
+	month = screen.getstr(15, 10, 10)
+	month = str(month)
 	month = str.lower(month)
 	c.execute('INSERT INTO constantYearly VALUES (?, ?, ?)', (name, amount, month))
 
@@ -153,7 +159,7 @@ def listMonthlyC():
 	screen.clear()
 	screen.border(0)
 	screen.refresh()
-	screen.addstr(9, 10, 'Constant Monthly Expense:')
+	screen.addstr(9, 10, 'Constant Monthly Expenses:')
 	c.execute('select * from constantMonthly')
 	contents = c.fetchall()
 	l = 10
@@ -176,12 +182,12 @@ def listMonthlyC():
 	screen.addstr(l, 10, "Press Enter")
 	pause = screen.getstr(l, 10, 1)
 
-def listMonthlyV():
+def listYearly():
 	screen.clear()
 	screen.border(0)
 	screen.refresh()
-	screen.addstr(9, 10, 'Varying Monthly Expense:')
-	c.execute('select * from varyingMonthly')
+	screen.addstr(9, 10, 'Yearly Expense:')
+	c.execute('select * from constantYearly')
 	contents = c.fetchall()
 	l = 10
 	for row in contents:
@@ -232,11 +238,10 @@ while x != ord('9'):
 	screen.border(0)
 	screen.addstr(2, 2, "Main Menu:")
 	screen.addstr(4, 4, "1 - Income")	
-	screen.addstr(5, 4, "2 - Add Constant Monthly Expense")
-	screen.addstr(6, 4, "3 - Edit Constant Monthly Expenses")
-	screen.addstr(7, 4, "4 - View Constant Monthly Expenses")
+	screen.addstr(5, 4, "2 - Constant Monthly Expenses")
+	screen.addstr(6, 4, "3 - Constant Yearly Expenses")
 
-	screen.addstr(10, 4, "9 - Exit")
+	screen.addstr(9, 4, "9 - Exit")
 
 	x = screen.getch()
 	
@@ -259,12 +264,39 @@ while x != ord('9'):
 		if x == ord('V') or x == ord('v'):
 			listIncome()
 
-	if x == ord('4'):
-		addExpenseM()
-	if x == ord('5'):
-		editExpenseM()
-	if x == ord('6'):
-		listMonthlyC()
+	if x == ord('2'):
+		screen.addstr(4, halfx, '[A]dd Constant Monthly Expense')
+		screen.addstr(5, halfx, '[E]dit Constant Monthly Expense')
+		screen.addstr(6, halfx, '[V]iew Constant Monthly Expenses')
+		screen.addstr(7, halfx, '[B]ack')
+		screen.refresh()
+		x = screen.getch()	
+			
+		if x == ord('A') or x == ord('a'):
+			addExpenseM()
+		if x == ord('E') or x == ord('e'):
+			editExpenseM()
+		if x == ord('V') or x == ord('v'):
+			listMonthlyC()
+
+	if x == ord('3'):
+		screen.addstr(4, halfx, '[A]dd Constant Yearly Expense')
+		screen.addstr(5, halfx, '[E]dit Constant Yearly Expense')
+		screen.addstr(6, halfx, '[V]iew Constant Yearly Expenses')
+		screen.addstr(7, halfx, '[B]ack')
+		screen.refresh()
+		x = screen.getch()	
+			
+		if x == ord('A') or x == ord('a'):
+			addExpenseY()
+		if x == ord('E') or x == ord('e'):
+			editExpenseY()
+		if x == ord('V') or x == ord('v'):
+			listYearly()
+
+
+
+
 
 screen.clear()
 curses.endwin()
