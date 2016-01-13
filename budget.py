@@ -176,6 +176,7 @@ x = 0
 
 while x != ord('9'):
 	screen = curses.initscr()
+	curses.noecho()
 	screen.clear()
 	screen.border(0)
 	screen.addstr(2, 2, "Main Menu:")
@@ -189,7 +190,9 @@ while x != ord('9'):
 	screen.addstr(10, 4, "9 - Exit")
 
 	x = screen.getch()
-
+	
+	curses.echo()
+	
 	if x == ord('1'):
 		addIncome()
 	if x == ord('2'):
