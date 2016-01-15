@@ -22,9 +22,9 @@ def startFunc():
 	screen.refresh()
 
 def convertMonth(month):
-	if (month == '1') or (month == 'jan') or (month == 'january'):
+	if (month == 1) or (month == 'jan') or (month == 'january'):
 		month = 'january'
-	elif (month == '2') or (month == 'feb') or (month == 'febuary'):
+	elif (month == 2) or (month == 'feb') or (month == 'febuary'):
 		month = 'febuary'
 	elif (month == 3) or (month == 'mar') or (month == 'march'):
 		month = 'march'
@@ -136,10 +136,10 @@ def addExpenseV(): # Add montly purchase
 	amount = screen.getstr(13, 10, 10)
 	amount = float(amount)
 	screen.addstr(14, 10, 'Month: ')
-	month = screen.getstr(15, 10, 10)
-	month = str(month)
-	month = str.lower(month)
+	date = datetime.datetime.now()
+	month = date.month
 	month = convertMonth(month)
+	month = str(month)
 	c.execute('INSERT INTO varyingMonthly VALUES (?, ?, ?)', (name, amount, month))
 
 def editExpenseV(): # Edit Monthly Purchase
@@ -154,9 +154,6 @@ def editExpenseV(): # Edit Monthly Purchase
 	amount = float(income)
 	screen.addstr(14, 10, 'Purchase Month: ')
 	month = screen.getstr(15, 10, 10)
-	month = str(month)
-	month = str.lower(month)
-	month = convertMonth(month)
 	c.execute('UPDATE varyingMonthly SET amount=(?) WHERE name=(?) AND month = (?)' (amount, name, month))
 
 
@@ -264,9 +261,10 @@ def listPurchases():
 	date = datetime.datetime.now()
 	month = date.month
 	month = convertMonth(month)
+	month = str(month)
 	screen.addstr(8, 10, month)
 	screen.addstr(9, 10, 'Purchases This month:')
-	c.execute('SELECT * FROM varyingMonthly WHERE month = (?)', month)
+	c.execute('SELECT * FROM varyingMonthly WHERE month=(?)', (month,))
 	contents = c.fetchall()
 	l = 10
 	for row in contents:
@@ -281,12 +279,6 @@ def listPurchases():
 				screen.addstr(l, 10, 'Purchase: '+ item)
 			elif n == 1:
 				screen.addstr(l, 10, 'Amount: $' + "%.2f" % float(item))
-#			elif n == 2:
-#				item = item[1:]
-#				item = re.sub('[\']', '', item)
-#				screen.addstr(l, 10, 'Month: ' + item)
-			else:
-				screen.addstr(l, 10, 'Derrr.... check the database')
 			l = l + 1
 			n = n + 1
 	screen.addstr(l, 10, "Press Enter")
