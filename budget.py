@@ -4,6 +4,7 @@ import sqlite3
 import os
 import curses
 import re
+import datetime
 
 # Create Database
 def createTable():
@@ -63,6 +64,7 @@ def addIncome(): # Add income values
 
 def editIncome(): # Edit income
 	startFunc()
+	showNames('income')
 	screen.addstr(10, 10, 'Which income are you updating?: ')
 	name = screen.getstr(11, 10, 20)
 	name = str(name)
@@ -86,6 +88,7 @@ def addExpenseM(): # Add Monthly Expense
 
 def editExpenseM(): # Edit Monthly Expense
 	startFunc()
+	showNames(constantMonthly)
 	screen.addstr(10, 10, 'Expense name: ')
 	name = screen.getstr(11, 10, 20)
 	name = str(name)
@@ -112,28 +115,74 @@ def addExpenseY(): # Add Yearly Expense
 	c.execute('INSERT INTO constantYearly VALUES (?, ?, ?)', (name, amount, month))
 
 def editExpenseY(): # Edit Yearly Expense
-	name = input(' Expense name: ')
+	startFunc()
+	showNames(constantYearly)
+	screen.addstr(10, 10, 'Expense name: ')
+	name = screen.getsr(11, 10, 20)
+	name = str(name)
 	name = str.lower(name)
-	amount = input('Monthly Expense amount: ')
+	screen.addstr(12, 10, 'Monthly Expense amount: ')
+	amount = screen.getstr(13, 10, 10)
 	amount = float(income)	
-	c.execute('UPDATE constantMonthly SET amount=(?) WHERE name=(?)' (amount, name))
-
+	c.execute('UPDATE constantYearly SET amount=(?) WHERE name=(?)' (amount, name))
 
 def addExpenseV(): # Add montly purchase
-	name = input('Purchase name: ')
+	startFunc()
+	screen.addstr(10, 10, 'Purchase name: ')
+	name = screen.getstr(11, 10, 20)
+	name = str(name)
 	name = str.lower(name)
-	amount = input('Purchase amount: ')
-	amount = float(income)
-	month = input('Month: ')
+	screen.addstr(12, 10, 'Purchase amount: ')
+	amount = screen.getstr(13, 10, 10)
+	amount = float(amount)
+	screen.addstr(14, 10, 'Month: ')
+	month = screen.getstr(15, 10, 10)
+	month = str(month)
 	month = str.lower(month)
+	month = convertMonth(month)
 	c.execute('INSERT INTO varyingMonthly VALUES (?, ?, ?)', (name, amount, month))
+
+def editExpenseV(): # Edit Monthly Purchase
+	startFunc()	
+	showNames(caryingMonthly)
+	screen.addstr(10, 10, 'Purchase name: ')
+	name = screen.getsr(11, 10, 20)
+	name = str(name)
+	name = str.lower(name)
+	screen.addstr(12, 10, 'Purchase amount: ')
+	amount = screen.getstr(13, 10, 10)
+	amount = float(income)
+	screen.addstr(14, 10, 'Purchase Month: ')
+	month = screen.getstr(15, 10, 10)
+	month = str(month)
+	month = str.lower(month)
+	month = convertMonth(month)
+	c.execute('UPDATE varyingMonthly SET amount=(?) WHERE name=(?) AND month = (?)' (amount, name, month))
+
 
 ### View Functions ###
 
+def showNames(db):
+	screen.addstr(10, halfx, 'Current Names: ')
+	db = str(db)
+	c.execute('SELECT * FROM %s' % (db))
+	contents = c.fetchall()
+	l = 10
+	for row in contents:	
+		n = 0
+		for item in row:
+			item = str(item)	
+			if n == 0:
+				item = item[1:]
+				item = re.sub('[\']', '', item)
+				screen.addstr(l, halfx, item )
+				l = l + 1
+			elif n == 1:
+				screen.addstr(l, halfx, '%.2f' % float(item) + '\n')
+				l = l + 1
+
 def listIncome():
-	screen.clear()
-	screen.border(0)
-	screen.refresh()
+	startFunc()
 	screen.addstr(9, 10, 'Income:')
 	c.execute('select * from income')
 	contents = c.fetchall()
@@ -156,9 +205,7 @@ def listIncome():
 	pause = screen.getstr(l, 10, 1)
 
 def listMonthlyC():
-	screen.clear()
-	screen.border(0)
-	screen.refresh()
+	startFunc()
 	screen.addstr(9, 10, 'Constant Monthly Expenses:')
 	c.execute('select * from constantMonthly')
 	contents = c.fetchall()
@@ -183,9 +230,7 @@ def listMonthlyC():
 	pause = screen.getstr(l, 10, 1)
 
 def listYearly():
-	screen.clear()
-	screen.border(0)
-	screen.refresh()
+	startFunc()
 	screen.addstr(9, 10, 'Yearly Expense:')
 	c.execute('select * from constantYearly')
 	contents = c.fetchall()
@@ -212,6 +257,42 @@ def listYearly():
 			n = n + 1
 	screen.addstr(l, 10, "Press Enter")
 	pause = screen.getstr(l, 10, 1)
+
+def listPurchases():
+	startFunc()
+	#Get Month
+	date = datetime.datetime.now()
+	month = date.month
+	month = convertMonth(month)
+	screen.addstr(8, 10, month)
+	screen.addstr(9, 10, 'Purchases This month:')
+	c.execute('SELECT * FROM varyingMonthly WHERE month = (?)', month)
+	contents = c.fetchall()
+	l = 10
+	for row in contents:
+		screen.addstr(l, 10, '---')
+		l = l + 1
+		n = 0
+		for item in row:
+			item = str(item)	
+			if n == 0:
+				item = item[1:]
+				item = re.sub('[\']', '', item)
+				screen.addstr(l, 10, 'Purchase: '+ item)
+			elif n == 1:
+				screen.addstr(l, 10, 'Amount: $' + "%.2f" % float(item))
+#			elif n == 2:
+#				item = item[1:]
+#				item = re.sub('[\']', '', item)
+#				screen.addstr(l, 10, 'Month: ' + item)
+			else:
+				screen.addstr(l, 10, 'Derrr.... check the database')
+			l = l + 1
+			n = n + 1
+	screen.addstr(l, 10, "Press Enter")
+	pause = screen.getstr(l, 10, 1)
+
+
 
 # Connect to DB file
 if os.path.isfile('./sqliteBudget.db'):
@@ -240,6 +321,7 @@ while x != ord('9'):
 	screen.addstr(4, 4, "1 - Income")	
 	screen.addstr(5, 4, "2 - Constant Monthly Expenses")
 	screen.addstr(6, 4, "3 - Constant Yearly Expenses")
+	screen.addstr(7, 4, "4 - Purchases")
 
 	screen.addstr(9, 4, "9 - Exit")
 
@@ -294,8 +376,20 @@ while x != ord('9'):
 		if x == ord('V') or x == ord('v'):
 			listYearly()
 
-
-
+	if x == ord('4'):
+		screen.addstr(4, halfx, '[A]dd Varying Monthly Expense')
+		screen.addstr(5, halfx, '[E]dit Varying Monthly Expense')
+		screen.addstr(6, halfx, '[V]iew Varying Monthly Expenses')
+		screen.addstr(7, halfx, '[B]ack')
+		screen.refresh()
+		x = screen.getch()	
+			
+		if x == ord('A') or x == ord('a'):
+			addExpenseV()
+		if x == ord('E') or x == ord('e'):
+			editExpenseV
+		if x == ord('V') or x == ord('v'):
+			listPurchases()
 
 
 screen.clear()
