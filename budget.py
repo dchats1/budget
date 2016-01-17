@@ -203,12 +203,12 @@ def listIncome():
 
 def listMonthlyC():
 	startFunc()
-	screen.addstr(9, 10, 'Constant Monthly Expenses:')
+	screen.addstr(2, 4, 'Constant Monthly Expenses:')
 	c.execute('select * from constantMonthly')
 	contents = c.fetchall()
-	l = 10
+	l = 4
 	for row in contents:
-		screen.addstr(l, 10, '---')
+		screen.addstr(l, 4, '---')
 		l = l + 1
 		n = 0
 		for item in row:
@@ -216,24 +216,24 @@ def listMonthlyC():
 			if n == 0:
 				item = item[1:]
 				item = re.sub('[\']', '', item)
-				screen.addstr(l, 10, 'Expense: '+ item)
+				screen.addstr(l, 4, 'Expense: '+ item)
 			elif n == 1:
-				screen.addstr(l, 10, 'Cost: $' + "%.2f" % float(item))
+				screen.addstr(l, 4, 'Cost: $' + "%.2f" % float(item))
 			else:
-				screen.addstr(l, 10, 'Derrr.... check the database')
+				screen.addstr(l, 4, 'Derrr.... check the database')
 			l = l + 1
 			n = n + 1
-	screen.addstr(l, 10, "Press Enter")
-	pause = screen.getstr(l, 10, 1)
+	screen.addstr(l, 4, "Press Enter")
+	pause = screen.getstr(l, 4, 1)
 
 def listYearly():
 	startFunc()
-	screen.addstr(9, 10, 'Yearly Expense:')
+	screen.addstr(2, 4, 'Yearly Expense:')
 	c.execute('select * from constantYearly')
 	contents = c.fetchall()
-	l = 10
+	l = 4
 	for row in contents:
-		screen.addstr(l, 10, '---')
+		screen.addstr(l, 4, '---')
 		l = l + 1
 		n = 0
 		for item in row:
@@ -241,19 +241,19 @@ def listYearly():
 			if n == 0:
 				item = item[1:]
 				item = re.sub('[\']', '', item)
-				screen.addstr(l, 10, 'Expense: '+ item)
+				screen.addstr(l, 4, 'Expense: '+ item)
 			elif n == 1:
-				screen.addstr(l, 10, 'Cost: $' + "%.2f" % float(item))
+				screen.addstr(l, 4, 'Cost: $' + "%.2f" % float(item))
 			elif n == 2:
 				item = item[1:]
 				item = re.sub('[\']', '', item)
-				screen.addstr(l, 10, 'Month: ' + item)
+				screen.addstr(l, 4, 'Month: ' + item)
 			else:
-				screen.addstr(l, 10, 'Derrr.... check the database')
+				screen.addstr(l, 4, 'Derrr.... check the database')
 			l = l + 1
 			n = n + 1
-	screen.addstr(l, 10, "Press Enter")
-	pause = screen.getstr(l, 10, 1)
+	screen.addstr(l, 4, "Press Enter")
+	pause = screen.getstr(l, 4, 1)
 
 def listPurchases():
 	startFunc()
@@ -262,13 +262,12 @@ def listPurchases():
 	month = date.month
 	month = convertMonth(month)
 	month = str(month)
-	screen.addstr(8, 10, month)
-	screen.addstr(9, 10, 'Purchases This month:')
+	screen.addstr(2, 4, 'Purchases from ' + month)
 	c.execute('SELECT * FROM varyingMonthly WHERE month=(?)', (month,))
 	contents = c.fetchall()
-	l = 10
+	l = 4
 	for row in contents:
-		screen.addstr(l, 10, '---')
+		screen.addstr(l, 4, '---')
 		l = l + 1
 		n = 0
 		for item in row:
@@ -276,13 +275,13 @@ def listPurchases():
 			if n == 0:
 				item = item[1:]
 				item = re.sub('[\']', '', item)
-				screen.addstr(l, 10, 'Purchase: '+ item)
+				screen.addstr(l, 4, 'Purchase: '+ item)
 			elif n == 1:
-				screen.addstr(l, 10, 'Amount: $' + "%.2f" % float(item))
+				screen.addstr(l, 4, 'Amount: $' + "%.2f" % float(item))
 			l = l + 1
 			n = n + 1
-	screen.addstr(l, 10, "Press Enter")
-	pause = screen.getstr(l, 10, 1)
+	screen.addstr(l, 4, "Press Enter")
+	pause = screen.getstr(l, 4, 1)
 
 
 
