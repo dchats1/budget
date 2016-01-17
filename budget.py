@@ -52,64 +52,64 @@ def convertMonth(month):
 
 def addIncome(): # Add income values
 	startFunc()
-	screen.addstr(10, 10, 'Source of income: ')
-	name = screen.getstr(11, 10, 20)
+	screen.addstr(4, 4, 'Source of income: ')
+	name = screen.getstr(5, 4, 20)
 	name = str(name)
 	name = str.lower(name)
 	screen.refresh()
-	screen.addstr(12, 10, 'Monthly Income: ')
-	income = screen.getstr(13, 10, 10)
+	screen.addstr(6, 4, 'Monthly Income: ')
+	income = screen.getstr(7, 4, 10)
 	income = float(income)
 	c.execute('INSERT INTO income VALUES (?, ?)', (name, income))
 
 def editIncome(): # Edit income
 	startFunc()
 	showNames('income')
-	screen.addstr(10, 10, 'Which income are you updating?: ')
-	name = screen.getstr(11, 10, 20)
+	screen.addstr(4, 5, 'Which income are you updating?: ')
+	name = screen.getstr(5, 4, 20)
 	name = str(name)
 	name = str.lower(name)
 	screen.refresh()
-	screen.addstr(12, 10, 'New value: ')
-	income = screen.getstr(13, 10, 10)
+	screen.addstr(6, 4, 'New value: ')
+	income = screen.getstr(7, 4, 10)
 	income = float(income)
 	c.execute('UPDATE income SET amount=(?) WHERE name=(?)', (income, name))
 
 def addExpenseM(): # Add Monthly Expense
 	startFunc()
-	screen.addstr(10, 10, 'Monthly Expense name: ')
-	name = screen.getstr(11, 10, 20)
+	screen.addstr(4, 4, 'Monthly Expense name: ')
+	name = screen.getstr(5, 4, 20)
 	name = str(name)
 	name = str.lower(name)
-	screen.addstr(12, 10, 'Monthly Expense amount: ')
-	amount = screen.getstr(13, 10, 10)
+	screen.addstr(6, 4, 'Monthly Expense amount: ')
+	amount = screen.getstr(7, 4, 10)
 	amount = float(amount)
 	c.execute('INSERT INTO constantMonthly VALUES (?, ?)', (name, amount))
 
 def editExpenseM(): # Edit Monthly Expense
 	startFunc()
 	showNames(constantMonthly)
-	screen.addstr(10, 10, 'Expense name: ')
-	name = screen.getstr(11, 10, 20)
+	screen.addstr(4, 4, 'Expense name: ')
+	name = screen.getstr(5, 4, 20)
 	name = str(name)
 	name = str.lower(name)
-	screen.addstr(12, 10, 'Monthly Expense amount: ')
-	amount = screen.getstr(13, 10, 10)
+	screen.addstr(6, 4, 'Monthly Expense amount: ')
+	amount = screen.getstr(7, 4, 10)
 	amount = float(income)	
 	c.execute('UPDATE constantMonthly SET amount=(?) WHERE name=(?)' (amount, name))
 
 
 def addExpenseY(): # Add Yearly Expense
 	startFunc()
-	screen.addstr(10, 10, 'Expense name: ')
-	name = screen.getstr(11, 10, 20)
+	screen.addstr(4, 4, 'Expense name: ')
+	name = screen.getstr(5, 4, 20)
 	name = str(name)
 	name = str.lower(name)
-	screen.addstr(12, 10, 'Yearly Expense amount: ')
-	amount = screen.getstr(13, 10, 10)
+	screen.addstr(6, 4, 'Yearly Expense amount: ')
+	amount = screen.getstr(7, 4, 10)
 	amount = float(amount)
-	screen.addstr(14, 10, 'Month of Payment: ')
-	month = screen.getstr(15, 10, 10)
+	screen.addstr(8, 4, 'Month of Payment: ')
+	month = screen.getstr(9, 4, 10)
 	month = str(month)
 	month = str.lower(month)
 	c.execute('INSERT INTO constantYearly VALUES (?, ?, ?)', (name, amount, month))
@@ -117,25 +117,25 @@ def addExpenseY(): # Add Yearly Expense
 def editExpenseY(): # Edit Yearly Expense
 	startFunc()
 	showNames(constantYearly)
-	screen.addstr(10, 10, 'Expense name: ')
-	name = screen.getsr(11, 10, 20)
+	screen.addstr(4, 4, 'Expense name: ')
+	name = screen.getsr(5, 4, 20)
 	name = str(name)
 	name = str.lower(name)
-	screen.addstr(12, 10, 'Monthly Expense amount: ')
-	amount = screen.getstr(13, 10, 10)
+	screen.addstr(6, 4, 'Monthly Expense amount: ')
+	amount = screen.getstr(7, 4, 10)
 	amount = float(income)	
 	c.execute('UPDATE constantYearly SET amount=(?) WHERE name=(?)' (amount, name))
 
 def addExpenseV(): # Add montly purchase
 	startFunc()
-	screen.addstr(10, 10, 'Purchase name: ')
-	name = screen.getstr(11, 10, 20)
+	screen.addstr(4, 4, 'Purchase name: ')
+	name = screen.getstr(5, 4, 20)
 	name = str(name)
 	name = str.lower(name)
-	screen.addstr(12, 10, 'Purchase amount: ')
-	amount = screen.getstr(13, 10, 10)
+	screen.addstr(6, 4, 'Purchase amount: ')
+	amount = screen.getstr(7, 4, 10)
 	amount = float(amount)
-	screen.addstr(14, 10, 'Month: ')
+	screen.addstr(8, 4, 'Month: ')
 	date = datetime.datetime.now()
 	month = date.month
 	month = convertMonth(month)
@@ -145,15 +145,15 @@ def addExpenseV(): # Add montly purchase
 def editExpenseV(): # Edit Monthly Purchase
 	startFunc()	
 	showNames(caryingMonthly)
-	screen.addstr(10, 10, 'Purchase name: ')
-	name = screen.getsr(11, 10, 20)
+	screen.addstr(4, 4, 'Purchase name: ')
+	name = screen.getsr(5, 4, 20)
 	name = str(name)
 	name = str.lower(name)
-	screen.addstr(12, 10, 'Purchase amount: ')
-	amount = screen.getstr(13, 10, 10)
+	screen.addstr(6, 4, 'Purchase amount: ')
+	amount = screen.getstr(7, 4, 10)
 	amount = float(income)
-	screen.addstr(14, 10, 'Purchase Month: ')
-	month = screen.getstr(15, 10, 10)
+	screen.addstr(8, 4, 'Purchase Month: ')
+	month = screen.getstr(9, 4, 10)
 	c.execute('UPDATE varyingMonthly SET amount=(?) WHERE name=(?) AND month = (?)' (amount, name, month))
 
 
@@ -180,10 +180,10 @@ def showNames(db):
 
 def listIncome():
 	startFunc()
-	screen.addstr(9, 10, 'Income:')
+	screen.addstr(2, 4, 'Income:')
 	c.execute('select * from income')
 	contents = c.fetchall()
-	l = 10
+	l = 4
 	for row in contents:	
 		n = 0
 		for item in row:
@@ -191,15 +191,15 @@ def listIncome():
 			if n == 0:
 				item = item[1:]
 				item = re.sub('[\']', '', item)
-				screen.addstr(l, 10, 'Source of income: '+ item)
+				screen.addstr(l, 4, 'Source of income: '+ item)
 			elif n == 1:
-				screen.addstr(l, 10, 'Monthly salary: $' + "%.2f" % float(item))
+				screen.addstr(l, 4, 'Monthly salary: $' + "%.2f" % float(item))
 			else:
-				screen.addstr(l, 10, 'Derrr.... check the database')
+				screen.addstr(l, 4, 'Derrr.... check the database')
 			l = l + 1
 			n = n + 1
-	screen.addstr(l, 10, "Press Enter")
-	pause = screen.getstr(l, 10, 1)
+	screen.addstr(l, 4, "Press Enter")
+	pause = screen.getstr(l, 4, 1)
 
 def listMonthlyC():
 	startFunc()
