@@ -50,6 +50,13 @@ def convertMonth(month):
 		month = 'Invalid Month, please update'
 	return month
 
+def getMonth():
+	date = datetime.datetime.now()
+	month = date.month
+	month = convertMonth(month)
+	month = str(month)
+	return month
+
 def addIncome(): # Add income values
 	startFunc()
 	screen.addstr(4, 4, 'Source of income: ')
@@ -257,11 +264,7 @@ def listYearly():
 
 def listPurchases():
 	startFunc()
-	#Get Month
-	date = datetime.datetime.now()
-	month = date.month
-	month = convertMonth(month)
-	month = str(month)
+	getMonth()
 	screen.addstr(2, 4, 'Purchases from ' + month)
 	c.execute('SELECT * FROM varyingMonthly WHERE month=(?)', (month,))
 	contents = c.fetchall()
@@ -284,6 +287,27 @@ def listPurchases():
 	pause = screen.getstr(l, 4, 1)
 
 
+### DB Queries ###
+
+def totalMonth():
+	month = getMonth()
+	c.execute('SELECT SUM(amount) FROM constantMonthly')
+	totalCM = c.fetchone()[0]
+	if totalCM == None:
+		totalCM = 0
+	c.execute('SELECT SUM(amount) FROM constantYearly WHERE month LIKE (?)', (month,))
+	totalCY = c.fetchone()[0]
+	if totalCY == None:
+		totalCY = 0
+	c.execute('SELECT SUM(amount) FROM varyingMonthly WHERE month LIKE (?)', (month,))
+	totalVM = c.fetchone()[0]
+	if totalVM == None:
+		totalVM = 0
+	totalM = totalCM + totalCY + totalVM
+	totalM = "$"+ "%.2f" % float(totalM)
+	return str(totalM)
+
+# App Starts here:
 
 # Connect to DB file
 if os.path.isfile('./sqliteBudget.db'):
@@ -298,8 +322,6 @@ else:
 
 x = 0
 
-
-
 while x != ord('9'):
 	screen = curses.initscr()
 	win = screen.getmaxyx()
@@ -313,8 +335,13 @@ while x != ord('9'):
 	screen.addstr(5, 4, "2 - Constant Monthly Expenses")
 	screen.addstr(6, 4, "3 - Constant Yearly Expenses")
 	screen.addstr(7, 4, "4 - Purchases")
+	screen.addstr(8, 4, "5 - Goals")
+	screen.addstr(10, 4, "9 - Exit")
 
-	screen.addstr(9, 4, "9 - Exit")
+	screen.addstr(12, 4, "Total Spent This month:")
+	screen.addstr(13, 4, totalMonth())
+
+
 
 	x = screen.getch()
 	
