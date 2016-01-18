@@ -11,7 +11,7 @@ def createTable():
 	c.execute('CREATE TABLE income(name TEXT, amount FLOAT)')
 	c.execute('CREATE TABLE constantMonthly(name TEXT, amount FLOAT)')
 	c.execute('CREATE TABLE constantYearly(name TEXT, amount FLOAT, month TEXT)')
-	c.execute('CREATE TABLE varyingMonthly(name TEXT, amount FLOAT, month TEXT)')
+	c.execute('CREATE TABLE varyingMonthly(name TEXT, amount FLOAT, month TEXT, year INT)')
 	db.commit()
 
 ### Functions to edit database ###
@@ -22,7 +22,7 @@ def startFunc():
 	screen.refresh()
 
 def convertMonth(month):
-	if (month == 1) or (month == 'jan') or (month == 'january'):
+	if month == 1 or month == '1' or month == 'jan' or month == 'january':
 		month = 'january'
 	elif (month == 2) or (month == 'feb') or (month == 'febuary'):
 		month = 'febuary'
@@ -47,7 +47,7 @@ def convertMonth(month):
 	elif (month == 12) or (month == 'dec') or (month == 'december'):
 		month = 'december'
 	else:
-		month = 'Invalid Month, please update'
+		month = month + ' is not valid, please update'
 	return month
 
 def getMonth():
@@ -56,6 +56,12 @@ def getMonth():
 	month = convertMonth(month)
 	month = str(month)
 	return month
+
+def getYear():
+	date = datetime.datetime.now()
+	year = date.year
+	year = int(year)
+	return year
 
 def addIncome(): # Add income values
 	startFunc()
@@ -119,6 +125,7 @@ def addExpenseY(): # Add Yearly Expense
 	month = screen.getstr(9, 4, 10)
 	month = str(month)
 	month = str.lower(month)
+	month = convertMonth(month)
 	c.execute('INSERT INTO constantYearly VALUES (?, ?, ?)', (name, amount, month))
 
 def editExpenseY(): # Edit Yearly Expense
@@ -143,24 +150,24 @@ def addExpenseV(): # Add montly purchase
 	amount = screen.getstr(7, 4, 10)
 	amount = float(amount)
 	screen.addstr(8, 4, 'Month: ')
-	date = datetime.datetime.now()
-	month = date.month
-	month = convertMonth(month)
-	month = str(month)
-	c.execute('INSERT INTO varyingMonthly VALUES (?, ?, ?)', (name, amount, month))
+	month = getMonth()
+	year = getYear()
+	c.execute('INSERT INTO varyingMonthly VALUES (?, ?, ?, ?)', (name, amount, month, year))
 
 def editExpenseV(): # Edit Monthly Purchase
 	startFunc()	
 	showNames(caryingMonthly)
-	screen.addstr(4, 4, 'Purchase name: ')
+	screen.addstr(4, 4, 'Purchase name:')
 	name = screen.getsr(5, 4, 20)
 	name = str(name)
 	name = str.lower(name)
-	screen.addstr(6, 4, 'Purchase amount: ')
+	screen.addstr(6, 4, 'Purchase amount:')
 	amount = screen.getstr(7, 4, 10)
 	amount = float(income)
-	screen.addstr(8, 4, 'Purchase Month: ')
+	screen.addstr(8, 4, 'Purchase Month:')
 	month = screen.getstr(9, 4, 10)
+	screen.addstr(9, 4, 'Purchase Year:')
+	year = screen.getstr(10, 4, 4)
 	c.execute('UPDATE varyingMonthly SET amount=(?) WHERE name=(?) AND month = (?)' (amount, name, month))
 
 
@@ -211,7 +218,7 @@ def listIncome():
 def listMonthlyC():
 	startFunc()
 	screen.addstr(2, 4, 'Constant Monthly Expenses:')
-	c.execute('select * from constantMonthly')
+	c.execute('SELECT * FROM constantMonthly')
 	contents = c.fetchall()
 	l = 4
 	for row in contents:
@@ -264,7 +271,7 @@ def listYearly():
 
 def listPurchases():
 	startFunc()
-	getMonth()
+	month = getMonth()
 	screen.addstr(2, 4, 'Purchases from ' + month)
 	c.execute('SELECT * FROM varyingMonthly WHERE month=(?)', (month,))
 	contents = c.fetchall()
@@ -290,6 +297,24 @@ def listPurchases():
 ### DB Queries ###
 
 def totalMonth():
+	month = getMonth()
+	c.execute('SELECT SUM(amount) FROM constantMonthly')
+	totalCM = c.fetchone()[0]
+	if totalCM == None:
+		totalCM = 0
+	c.execute('SELECT SUM(amount) FROM constantYearly WHERE month LIKE (?)', (month,))
+	totalCY = c.fetchone()[0]
+	if totalCY == None:
+		totalCY = 0
+	c.execute('SELECT SUM(amount) FROM varyingMonthly WHERE month LIKE (?)', (month,))
+	totalVM = c.fetchone()[0]
+	if totalVM == None:
+		totalVM = 0
+	totalM = totalCM + totalCY + totalVM
+	totalM = "$"+ "%.2f" % float(totalM)
+	return str(totalM)
+
+def totalYear(): # NEEDS UPDATE
 	month = getMonth()
 	c.execute('SELECT SUM(amount) FROM constantMonthly')
 	totalCM = c.fetchone()[0]
@@ -395,9 +420,9 @@ while x != ord('9'):
 			listYearly()
 
 	if x == ord('4'):
-		screen.addstr(4, halfx, '[A]dd Varying Monthly Expense')
-		screen.addstr(5, halfx, '[E]dit Varying Monthly Expense')
-		screen.addstr(6, halfx, '[V]iew Varying Monthly Expenses')
+		screen.addstr(4, halfx, '[A]dd Purchase')
+		screen.addstr(5, halfx, '[E]dit Purchase')
+		screen.addstr(6, halfx, '[V]iew Purchase')
 		screen.addstr(7, halfx, '[B]ack')
 		screen.refresh()
 		x = screen.getch()	
