@@ -8,7 +8,7 @@ import datetime
 
 # Create Database
 def createTable():
-	c.execute('CREATE TABLE income(name TEXT, amount FLOAT)')
+	c.execute('CREATE TABLE income(name TEXT, amount FLOAT, month TEXT, year INT)')
 	c.execute('CREATE TABLE constantMonthly(name TEXT, amount FLOAT)')
 	c.execute('CREATE TABLE constantYearly(name TEXT, amount FLOAT, month TEXT)')
 	c.execute('CREATE TABLE varyingMonthly(name TEXT, amount FLOAT, month TEXT, year INT)')
@@ -24,27 +24,27 @@ def startFunc():
 def convertMonth(month):
 	if month == 1 or month == '1' or month == 'jan' or month == 'january':
 		month = 'january'
-	elif (month == 2) or (month == 'feb') or (month == 'febuary'):
+	elif month == 2 or month == '2' or month == 'feb' or month == 'febuary':
 		month = 'febuary'
-	elif (month == 3) or (month == 'mar') or (month == 'march'):
+	elif month == 3 or month == '3' or month == 'mar' or month == 'march':
 		month = 'march'
-	elif (month == 4) or (month == 'apr') or (month == 'april'):
+	elif month == 4 or month == '4' or month == 'apr' or month == 'april':
 		month = 'april'
-	elif (month == 5) or (month == 'may'):
+	elif month == 5 or month == '5' or month == 'may':
 		month = 'may'
-	elif (month == 6) or (month == 'jun') or (month == 'june'):
+	elif month == 6 or month == '6' or month == 'jun' or month == 'june':
 		month = 'june'
-	elif (month == 7) or (month == 'jul') or (month == 'july'):
+	elif month == 7 or month == '7' or month == 'jul' or month == 'july':
 		month = 'july'
-	elif (month == 8) or (month == 'aug') or (month == 'august'):
+	elif month == 8 or month == '8' or month == 'aug' or month == 'august':
 		month = 'august'
-	elif (month == 9) or (month == 'sep') or (month == 'september'):
+	elif month == 9 or month == '9' or month == 'sep' or month == 'september':
 		month = 'september'
-	elif (month == 10) or (month == 'oct') or (month == 'october'):
+	elif month == 1 or month == '10' or month == 'oct' or month == 'october':
 		month = 'october'
-	elif (month == 11) or (month == 'nov') or (month == 'november'):
+	elif month == 11 or month == '11' or month == 'nov' or month == 'november':
 		month = 'november'
-	elif (month == 12) or (month == 'dec') or (month == 'december'):
+	elif month == 12 or month == '12' or month == 'dec' or month == 'december':
 		month = 'december'
 	else:
 		month = month + ' is not valid, please update'
@@ -63,17 +63,30 @@ def getYear():
 	year = int(year)
 	return year
 
-def addIncome(): # Add income values
+def addIncome(income): # Add income values
 	startFunc()
-	screen.addstr(4, 4, 'Source of income: ')
-	name = screen.getstr(5, 4, 20)
-	name = str(name)
-	name = str.lower(name)
-	screen.refresh()
-	screen.addstr(6, 4, 'Monthly Income: ')
-	income = screen.getstr(7, 4, 10)
-	income = float(income)
-	c.execute('INSERT INTO income VALUES (?, ?)', (name, income))
+	if income == 'income':
+		screen.addstr(4, 4, 'Source of income: ')
+		name = screen.getstr(5, 4, 20)
+		name = str(name)
+		name = str.lower(name)
+		screen.refresh()
+		screen.addstr(6, 4, 'Monthly Income: ')	
+		income = screen.getstr(7, 4, 10)
+		income = float(income)
+		month = 'ALL'
+		year = 1
+		c.execute('INSERT INTO income VALUES (?, ?, ?, ?)', (name, income, month, year))
+	elif income == 'bonus':
+		screen.addstr(4, 4, 'Bonus amount:')
+		income = screen.getstr(5, 4, 10)
+		income = float(income)
+		name = 'bonus'
+		month = getMonth()
+		year = getYear()
+		c.execute('INSERT INTO income VALUES (?, ?, ?, ?)', (name, income, month, year))
+	else:
+		pass
 
 def editIncome(): # Edit income
 	startFunc()
@@ -168,7 +181,7 @@ def editExpenseV(): # Edit Monthly Purchase
 	month = screen.getstr(9, 4, 10)
 	screen.addstr(9, 4, 'Purchase Year:')
 	year = screen.getstr(10, 4, 4)
-	c.execute('UPDATE varyingMonthly SET amount=(?) WHERE name=(?) AND month = (?)' (amount, name, month))
+	c.execute('UPDATE varyingMonthly SET amount=(?) WHERE name=(?) AND month = (?) and year = (?)' (amount, name, month, year))
 
 
 ### View Functions ###
@@ -194,8 +207,9 @@ def showNames(db):
 
 def listIncome():
 	startFunc()
+	# Income
 	screen.addstr(2, 4, 'Income:')
-	c.execute('select * from income')
+	c.execute('SELECT * FROM income WHERE month="ALL"')
 	contents = c.fetchall()
 	l = 4
 	for row in contents:	
@@ -208,10 +222,37 @@ def listIncome():
 				screen.addstr(l, 4, 'Source of income: '+ item)
 			elif n == 1:
 				screen.addstr(l, 4, 'Monthly salary: $' + "%.2f" % float(item))
+			elif n == 2 or n == 3:
+				pass
 			else:
 				screen.addstr(l, 4, 'Derrr.... check the database')
 			l = l + 1
 			n = n + 1
+	# Bonus
+	month = getMonth()
+	year = getYear()
+	screen.addstr(l, 4, month.title() + ' bonus:')
+	c.execute('SELECT * FROM income WHERE month=(?) AND year=(?)', (month, year))
+	contents2 = c.fetchall()
+	for row in contents2:
+			n = 0
+			for item in row:
+				item = str(item)	
+			if n == 0:
+				pass
+			elif n == 1:
+				if item == null:
+					screen.addstr(l, 4, '$0.00')
+				else:
+					screen.addstr(l, 4, '$' + "%.2f" % float(item))
+			elif n == 2 or n == 3:
+				pass
+			else:
+				screen.addstr(l, 4, 'Derrr.... check the database')
+			l = l + 1
+			n = n + 1
+
+	l = l + 2
 	screen.addstr(l, 4, "Press Enter")
 	pause = screen.getstr(l, 4, 1)
 
@@ -378,16 +419,19 @@ while x != ord('9'):
 		screen.addstr(4, halfx, '[A]dd Income')
 		screen.addstr(5, halfx, '[E]dit Income')
 		screen.addstr(6, halfx, '[V]iew Income')
-		screen.addstr(7, halfx, '[B]ack')
+		screen.addstr(7, halfx, '[C] Bonus')
+		screen.addstr(8, halfx, '[B]ack')
 		screen.refresh()
 		x = screen.getch()	
 			
 		if x == ord('A') or x == ord('a'):
-			addIncome()
+			addIncome('income')
 		if x == ord('E') or x == ord('e'):
 			editIncome()
 		if x == ord('V') or x == ord('v'):
 			listIncome()
+		if x == ord('C') or x == ord('c'):
+			addIncome('bonus')
 
 	if x == ord('2'):
 		screen.addstr(4, halfx, '[A]dd Constant Monthly Expense')
