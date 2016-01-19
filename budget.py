@@ -284,7 +284,7 @@ def listMonthlyC():
 def listYearly():
 	startFunc()
 	screen.addstr(2, 4, 'Yearly Expense:')
-	c.execute('select * from constantYearly')
+	c.execute('SELECT * FROM constantYearly')
 	contents = c.fetchall()
 	l = 4
 	for row in contents:
