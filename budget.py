@@ -53,6 +53,7 @@ def convertMonth(month):
 def getMonth():
 	date = datetime.datetime.now()
 	month = date.month
+	month = str(month)
 	month = convertMonth(month)
 	month = str(month)
 	return month
@@ -128,14 +129,14 @@ def editExpenseM(): # Edit Monthly Expense
 def addExpenseY(): # Add Yearly Expense
 	startFunc()
 	screen.addstr(4, 4, 'Expense name: ')
-	name = screen.getstr(5, 4, 20)
+	name = screen.getstr(5, 4, 20).decode('utf8')
 	name = str(name)
 	name = str.lower(name)
 	screen.addstr(6, 4, 'Yearly Expense amount: ')
 	amount = screen.getstr(7, 4, 10)
 	amount = float(amount)
 	screen.addstr(8, 4, 'Month of Payment: ')
-	month = screen.getstr(9, 4, 10)
+	month = screen.getstr(9, 4, 10).decode('utf8')
 	month = str(month)
 	month = str.lower(month)
 	month = convertMonth(month)
@@ -149,7 +150,7 @@ def editExpenseY(): # Edit Yearly Expense
 	name = str(name)
 	name = str.lower(name)
 	screen.addstr(6, 4, 'Yearly Expense amount: ')
-	amount = screen.getstr(, 4, 10)
+	amount = screen.getstr(7, 4, 10)
 	amount = float(income)	
 	c.execute('UPDATE constantYearly SET amount=(?) WHERE name=(?)' (amount, name))
 
@@ -294,14 +295,14 @@ def listYearly():
 		for item in row:
 			item = str(item)	
 			if n == 0:
-				item = item[1:]
-				item = re.sub('[\']', '', item)
+				#item = item[1:]
+				#item = re.sub('[\']', '', item)
 				screen.addstr(l, 4, 'Expense: '+ item)
 			elif n == 1:
 				screen.addstr(l, 4, 'Cost: $' + "%.2f" % float(item))
 			elif n == 2:
-				item = item[1:]
-				item = re.sub('[\']', '', item)
+				#item = item[1:]
+				#item = re.sub('[\']', '', item)
 				screen.addstr(l, 4, 'Month: ' + item)
 			else:
 				screen.addstr(l, 4, 'Derrr.... check the database')
