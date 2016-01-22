@@ -22,32 +22,32 @@ def startFunc():
 	screen.refresh()
 
 def convertMonth(month):
-	if month == 1 or month == '1' or month == 'jan' or month == 'january':
+	if month == '1' or month == 'jan' or month == 'january':
 		month = 'january'
-	elif month == 2 or month == '2' or month == 'feb' or month == 'febuary':
+	elif month == '2' or month == 'feb' or month == 'febuary':
 		month = 'febuary'
-	elif month == 3 or month == '3' or month == 'mar' or month == 'march':
+	elif month == '3' or month == 'mar' or month == 'march':
 		month = 'march'
-	elif month == 4 or month == '4' or month == 'apr' or month == 'april':
+	elif month == '4' or month == 'apr' or month == 'april':
 		month = 'april'
-	elif month == 5 or month == '5' or month == 'may':
+	elif month == '5' or month == 'may':
 		month = 'may'
-	elif month == 6 or month == '6' or month == 'jun' or month == 'june':
+	elif month == '6' or month == 'jun' or month == 'june':
 		month = 'june'
-	elif month == 7 or month == '7' or month == 'jul' or month == 'july':
+	elif month == '7' or month == 'jul' or month == 'july':
 		month = 'july'
-	elif month == 8 or month == '8' or month == 'aug' or month == 'august':
+	elif month == '8' or month == 'aug' or month == 'august':
 		month = 'august'
-	elif month == 9 or month == '9' or month == 'sep' or month == 'september':
+	elif month == '9' or month == 'sep' or month == 'september':
 		month = 'september'
-	elif month == 1 or month == '10' or month == 'oct' or month == 'october':
+	elif month == '10' or month == 'oct' or month == 'october':
 		month = 'october'
-	elif month == 11 or month == '11' or month == 'nov' or month == 'november':
+	elif month == '11' or month == 'nov' or month == 'november':
 		month = 'november'
-	elif month == 12 or month == '12' or month == 'dec' or month == 'december':
+	elif month == '12' or month == 'dec' or month == 'december':
 		month = 'december'
 	else:
-		month = month + ' is not valid, please update'
+		month = str(month) + ' is not valid, please update'
 	return month
 
 def getMonth():
@@ -148,8 +148,8 @@ def editExpenseY(): # Edit Yearly Expense
 	name = screen.getsr(5, 4, 20)
 	name = str(name)
 	name = str.lower(name)
-	screen.addstr(6, 4, 'Monthly Expense amount: ')
-	amount = screen.getstr(7, 4, 10)
+	screen.addstr(6, 4, 'Yearly Expense amount: ')
+	amount = screen.getstr(, 4, 10)
 	amount = float(income)	
 	c.execute('UPDATE constantYearly SET amount=(?) WHERE name=(?)' (amount, name))
 
