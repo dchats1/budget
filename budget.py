@@ -6,6 +6,8 @@ import curses
 import re
 import datetime
 
+## Need to convert month's in database to number, then edit displays to show month name instead of numbers ##
+
 # Create Database
 def createTable():
 	c.execute('CREATE TABLE income(name TEXT, amount FLOAT, month TEXT, year INT)')
@@ -50,34 +52,34 @@ def convertMonth(month):
 		month = str(month) + ' is not valid, please update'
 	return month
 
-def getMonthNumber(month):
-	if month == 'january':
-		month = 1
-	elif month == 'febuary':
-		month = 2
-	elif month == 'march':
-		month = 3
-	elif month == 'april':
-		month = 4
-	elif month == 'may':
-		month = 5
-	elif month == 'june':
-		month = 6
-	elif month == 'july':
-		month = 7
-	elif month == 'august':
-		month = 8
-	elif month == 'september':
-		month = 9
-	elif month == 'october':
-		month = 10
-	elif month == 'november':
-		month = 11
-	elif month == 'december':
-		month = 12
+def getMonthNumber(num):
+	if num == 'january':
+		num = 1
+	elif num == 'febuary':
+		num = 2
+	elif num == 'march':
+		num = 3
+	elif num == 'april':
+		num = 4
+	elif num == 'may':
+		num = 5
+	elif num == 'june':
+		num = 6
+	elif num == 'july':
+		num = 7
+	elif num == 'august':
+		num = 8
+	elif num == 'september':
+		num = 9
+	elif num == 'october':
+		num = 10
+	elif num == 'november':
+		num = 11
+	elif num == 'december':
+		num = 12
 	else:
-		month = str(month) + ' is not valid, please update'
-	return month
+		num = str(num) + ' is not valid, please update'
+	return num
 
 def getMonth():
 	date = datetime.datetime.now()
@@ -382,9 +384,10 @@ def totalMonth():
 	return str(totalM)
 
 def totalYear(): # NEEDS UPDATE
-	# Get month number
-	# 
+	# Get month
 
+	 
+	
 	c.execute('SELECT SUM(amount) FROM constantMonthly')
 	totalCM = c.fetchone()[0]
 	if totalCM == None:
