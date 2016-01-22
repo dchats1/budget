@@ -50,6 +50,35 @@ def convertMonth(month):
 		month = str(month) + ' is not valid, please update'
 	return month
 
+def getMonthNumber(month):
+	if month == 'january':
+		month = 1
+	elif month == 'febuary':
+		month = 2
+	elif month == 'march':
+		month = 3
+	elif month == 'april':
+		month = 4
+	elif month == 'may':
+		month = 5
+	elif month == 'june':
+		month = 6
+	elif month == 'july':
+		month = 7
+	elif month == 'august':
+		month = 8
+	elif month == 'september':
+		month = 9
+	elif month == 'october':
+		month = 10
+	elif month == 'november':
+		month = 11
+	elif month == 'december':
+		month = 12
+	else:
+		month = str(month) + ' is not valid, please update'
+	return month
+
 def getMonth():
 	date = datetime.datetime.now()
 	month = date.month
@@ -295,14 +324,10 @@ def listYearly():
 		for item in row:
 			item = str(item)	
 			if n == 0:
-				#item = item[1:]
-				#item = re.sub('[\']', '', item)
 				screen.addstr(l, 4, 'Expense: '+ item)
 			elif n == 1:
 				screen.addstr(l, 4, 'Cost: $' + "%.2f" % float(item))
 			elif n == 2:
-				#item = item[1:]
-				#item = re.sub('[\']', '', item)
 				screen.addstr(l, 4, 'Month: ' + item)
 			else:
 				screen.addstr(l, 4, 'Derrr.... check the database')
@@ -357,12 +382,14 @@ def totalMonth():
 	return str(totalM)
 
 def totalYear(): # NEEDS UPDATE
-	month = getMonth()
+	# Get month number
+	# 
+
 	c.execute('SELECT SUM(amount) FROM constantMonthly')
 	totalCM = c.fetchone()[0]
 	if totalCM == None:
 		totalCM = 0
-	c.execute('SELECT SUM(amount) FROM constantYearly WHERE month LIKE (?)', (month,))
+	c.execute('SELECT SUM(amount) FROM constantYearly')
 	totalCY = c.fetchone()[0]
 	if totalCY == None:
 		totalCY = 0
