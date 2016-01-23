@@ -230,7 +230,7 @@ def showNames(db):
 			if n == 0:
 				screen.addstr(l, halfx, item )
 				l = l + 1
-				
+
 def listIncome():
 	startFunc()
 	# Income
@@ -377,19 +377,24 @@ def totalMonth():
 	return str(totalM)
 
 def totalYear(): # NEEDS UPDATE
-	# Get month
-
-	 
-	
+	month = getMonth()
+	year = getYear()
 	c.execute('SELECT SUM(amount) FROM constantMonthly')
 	totalCM = c.fetchone()[0]
 	if totalCM == None:
 		totalCM = 0
-	c.execute('SELECT SUM(amount) FROM constantYearly')
-	totalCY = c.fetchone()[0]
-	if totalCY == None:
-		totalCY = 0
-	c.execute('SELECT SUM(amount) FROM varyingMonthly WHERE month LIKE (?)', (month,))
+	
+	totalCY = 0
+	n = 1
+	while n <= month:
+		c.execute('SELECT SUM(amount) FROM constantYearly WHERE month=(?)', (n,))
+		totalCYtemp = c.fetchone()[0]
+		if totalCYtemp == None:
+			totalCYtemp = 0
+		totalCY = totalCY + totalCYtemp
+		n = n + 1
+
+	c.execute('SELECT SUM(amount) FROM varyingMonthly WHERE month=(?) AND year=(?)', (month, year))
 	totalVM = c.fetchone()[0]
 	if totalVM == None:
 		totalVM = 0
@@ -397,7 +402,7 @@ def totalYear(): # NEEDS UPDATE
 	totalM = "$"+ "%.2f" % float(totalM)
 	return str(totalM)
 
-# App Starts here:
+### App Starts here ###
 
 # Connect to DB file
 if os.path.isfile('./sqliteBudget.db'):
@@ -408,8 +413,8 @@ else:
 	c = db.cursor()
 	createTable()
 	
-# Main Menu
 
+# Main Menu
 x = 0
 
 while x != ord('9'):
@@ -428,10 +433,11 @@ while x != ord('9'):
 	screen.addstr(8, 4, "5 - Goals")
 	screen.addstr(10, 4, "9 - Exit")
 
-	screen.addstr(12, 4, "Total Spent This month:")
+	screen.addstr(12, 4, "Total spent this month:")
 	screen.addstr(13, 4, totalMonth())
 
-
+	screen.addstr(12, halfx, "Total spend this year:")
+	screen.addstr(13, halfx, totalYear())
 
 	x = screen.getch()
 	
