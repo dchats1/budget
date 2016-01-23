@@ -96,7 +96,7 @@ def addIncome(income): # Add income values
 	startFunc()
 	if income == 'income':
 		screen.addstr(4, 4, 'Source of income: ')
-		name = screen.getstr(5, 4, 20)
+		name = screen.getstr(5, 4, 20).decode('utf8')
 		name = str(name)
 		name = str.lower(name)
 		screen.refresh()
@@ -122,7 +122,7 @@ def addIncome(income): # Add income values
 def editIncome(): # Edit income
 	startFunc()
 	showNames('income')
-	screen.addstr(4, 5, 'Which income are you updating?: ')
+	screen.addstr(4, 4, 'Which income are you updating?: ')
 	name = screen.getstr(5, 4, 20)
 	name = str(name)
 	name = str.lower(name)
@@ -135,7 +135,7 @@ def editIncome(): # Edit income
 def addExpenseM(): # Add Monthly Expense
 	startFunc()
 	screen.addstr(4, 4, 'Monthly Expense name: ')
-	name = screen.getstr(5, 4, 20)
+	name = screen.getstr(5, 4, 20).decode('utf8')
 	name = str(name)
 	name = str.lower(name)
 	screen.addstr(6, 4, 'Monthly Expense amount: ')
@@ -147,7 +147,7 @@ def editExpenseM(): # Edit Monthly Expense
 	startFunc()
 	showNames(constantMonthly)
 	screen.addstr(4, 4, 'Expense name: ')
-	name = screen.getstr(5, 4, 20)
+	name = screen.getstr(5, 4, 20).decode('utf8')
 	name = str(name)
 	name = str.lower(name)
 	screen.addstr(6, 4, 'Monthly Expense amount: ')
@@ -176,7 +176,7 @@ def editExpenseY(): # Edit Yearly Expense
 	startFunc()
 	showNames(constantYearly)
 	screen.addstr(4, 4, 'Expense name: ')
-	name = screen.getsr(5, 4, 20)
+	name = screen.getsr(5, 4, 20).decode('utf8')
 	name = str(name)
 	name = str.lower(name)
 	screen.addstr(6, 4, 'Yearly Expense amount: ')
@@ -187,7 +187,7 @@ def editExpenseY(): # Edit Yearly Expense
 def addExpenseV(): # Add montly purchase
 	startFunc()
 	screen.addstr(4, 4, 'Purchase name: ')
-	name = screen.getstr(5, 4, 20)
+	name = screen.getstr(5, 4, 20).decode('utf8')
 	name = str(name)
 	name = str.lower(name)
 	screen.addstr(6, 4, 'Purchase amount: ')
@@ -201,7 +201,7 @@ def editExpenseV(): # Edit Monthly Purchase
 	startFunc()	
 	showNames(caryingMonthly)
 	screen.addstr(4, 4, 'Purchase name:')
-	name = screen.getsr(5, 4, 20)
+	name = screen.getsr(5, 4, 20).decode('utf8')
 	name = str(name)
 	name = str.lower(name)
 	screen.addstr(6, 4, 'Purchase amount:')
@@ -218,24 +218,19 @@ def editExpenseV(): # Edit Monthly Purchase
 ### View Functions ###
 
 def showNames(db):
-	screen.addstr(10, halfx, 'Current Names: ')
+	screen.addstr(4, halfx, 'Current Names: ')
 	db = str(db)
-	c.execute('SELECT * FROM %s' % (db))
+	c.execute('SELECT name FROM %s' % (db))
 	contents = c.fetchall()
-	l = 10
+	l = 5
 	for row in contents:	
 		n = 0
 		for item in row:
 			item = str(item)	
 			if n == 0:
-				item = item[1:]
-				item = re.sub('[\']', '', item)
 				screen.addstr(l, halfx, item )
 				l = l + 1
-			elif n == 1:
-				screen.addstr(l, halfx, '%.2f' % float(item) + '\n')
-				l = l + 1
-
+				
 def listIncome():
 	startFunc()
 	# Income
@@ -248,8 +243,6 @@ def listIncome():
 		for item in row:
 			item = str(item)	
 			if n == 0:
-				item = item[1:] # Decode getstr() to remove these lines
-				item = re.sub('[\']', '', item) ##
 				screen.addstr(l, 4, 'Source of income: '+ item)
 			elif n == 1:
 				screen.addstr(l, 4, 'Monthly salary: $' + "%.2f" % float(item))
