@@ -12,8 +12,8 @@ import datetime
 def createTable():
 	c.execute('CREATE TABLE income(name TEXT, amount FLOAT, month TEXT, year INT)')
 	c.execute('CREATE TABLE constantMonthly(name TEXT, amount FLOAT)')
-	c.execute('CREATE TABLE constantYearly(name TEXT, amount FLOAT, month TEXT)')
-	c.execute('CREATE TABLE varyingMonthly(name TEXT, amount FLOAT, month TEXT, year INT)')
+	c.execute('CREATE TABLE constantYearly(name TEXT, amount FLOAT, month INT)')
+	c.execute('CREATE TABLE varyingMonthly(name TEXT, amount FLOAT, month INT, year INT)')
 	db.commit()
 
 ### Functions to edit database ###
@@ -84,9 +84,6 @@ def getMonthNumber(num):
 def getMonth():
 	date = datetime.datetime.now()
 	month = date.month
-	month = str(month)
-	month = convertMonth(month)
-	month = str(month)
 	return month
 
 def getYear():
@@ -103,15 +100,17 @@ def addIncome(income): # Add income values
 		name = str(name)
 		name = str.lower(name)
 		screen.refresh()
-		screen.addstr(6, 4, 'Monthly Income: ')	
-		income = screen.getstr(7, 4, 10)
+		screen.addstr(6, 4, 'Monthly Income:')
+		screen.addstr(7, 4, '$')	
+		income = screen.getstr(7, 5, 10)
 		income = float(income)
 		month = 'ALL'
 		year = 1
 		c.execute('INSERT INTO income VALUES (?, ?, ?, ?)', (name, income, month, year))
 	elif income == 'bonus':
 		screen.addstr(4, 4, 'Bonus amount:')
-		income = screen.getstr(5, 4, 10)
+		screen.addstr(5, 4, '$')
+		income = screen.getstr(5, 5, 10)
 		income = float(income)
 		name = 'bonus'
 		month = getMonth()
@@ -170,7 +169,7 @@ def addExpenseY(): # Add Yearly Expense
 	month = screen.getstr(9, 4, 10).decode('utf8')
 	month = str(month)
 	month = str.lower(month)
-	month = convertMonth(month)
+	month = getMonthNumber(convertMonth(month))
 	c.execute('INSERT INTO constantYearly VALUES (?, ?, ?)', (name, amount, month))
 
 def editExpenseY(): # Edit Yearly Expense
@@ -194,7 +193,6 @@ def addExpenseV(): # Add montly purchase
 	screen.addstr(6, 4, 'Purchase amount: ')
 	amount = screen.getstr(7, 4, 10)
 	amount = float(amount)
-	screen.addstr(8, 4, 'Month: ')
 	month = getMonth()
 	year = getYear()
 	c.execute('INSERT INTO varyingMonthly VALUES (?, ?, ?, ?)', (name, amount, month, year))
@@ -211,6 +209,7 @@ def editExpenseV(): # Edit Monthly Purchase
 	amount = float(income)
 	screen.addstr(8, 4, 'Purchase Month:')
 	month = screen.getstr(9, 4, 10)
+	month = getMonthNumber(convertMonth(month))
 	screen.addstr(9, 4, 'Purchase Year:')
 	year = screen.getstr(10, 4, 4)
 	c.execute('UPDATE varyingMonthly SET amount=(?) WHERE name=(?) AND month = (?) and year = (?)' (amount, name, month, year))
@@ -249,8 +248,8 @@ def listIncome():
 		for item in row:
 			item = str(item)	
 			if n == 0:
-				item = item[1:]
-				item = re.sub('[\']', '', item)
+				item = item[1:] # Decode getstr() to remove these lines
+				item = re.sub('[\']', '', item) ##
 				screen.addstr(l, 4, 'Source of income: '+ item)
 			elif n == 1:
 				screen.addstr(l, 4, 'Monthly salary: $' + "%.2f" % float(item))
@@ -261,7 +260,8 @@ def listIncome():
 			l = l + 1
 			n = n + 1
 	# Bonus
-	month = getMonth()
+	month = str(getMonth())
+	month = convertMonth(month)
 	year = getYear()
 	screen.addstr(l, 4, month.title() + ' bonus:')
 	c.execute('SELECT * FROM income WHERE month=(?) AND year=(?)', (month, year))
